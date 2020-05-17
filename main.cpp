@@ -10,19 +10,23 @@
 //b. Замена поведения (тут тоже используется позднее связывание) ++
 //c. Расширения поведения (тут тоже используется позднее связывание) +
 
+//1. Смоделировано некорректно. Вы используете Наследование Гостя от Пиццерии. Между гостем и пиццерией явно другое отношение.
+//2. Не нашёл демонстрации инкапсуляции с помощью абстракции. Для этого создаётся функция/метод, которая на вход ожидает абстракцию, а по факту получает какую-то реализацию
+//Показать часть
+
 #include <iostream>
 enum Pizza { Pepperoni, Hawaiian, FourCheese};
+enum NewPizza {Bulgarian, Russian, Vegeterian};
 class Pizzeria {
 protected:
     std::string Order;
     int Price;
     Pizza pizza;
-protected:
-    const std::string StuffName;
 public:
-    std::string Adress;                         //отсутсвие инкапсуляции
+    const std::string Adress;                         //отсутсвие инкапсуляции
+    std::string StuffName;
 
-    Pizzeria(std::string Adress) {
+    Pizzeria(const char *Adress) {
         this -> Adress = Adress;
     }
 
@@ -32,8 +36,16 @@ public:
         this -> pizza = pizza;
     }
 
-    void setOrder(std::string order) { this -> Order = order; };
-    std::string getOrder() { return Order; };
+    void setOrder(std::string order) {
+        this -> Order = order;
+    };
+    std::string getOrder() {
+        return Order;
+    };
+    std::string getAdress() const {
+        std::cout << "Our Adress is ";
+        return Adress
+    };
 
     virtual void setPrice(Pizza pizza, int price) {                                           //инкапсуляция через позднее связывание
         this -> Price = price;
@@ -55,15 +67,20 @@ public:
     void callStuff (std::string StuffName) const {                                                //расширение поведения
         std::cout << "My name is " << StuffName << ". How can I help you?" << std::endl;
     }
-    virtual const char* getStuffName(int x) { return "Nick"; }
+    virtual std::string getStuffName() {
+        return (const std::basic_string<char> &) "Nick";
+    }
+
+    std:: string sayAdress(Pizzeria Adress) {
+        std::cout << getAdress() << std::endl;
+    }
 };
 
-class Guest : public Pizzeria {
+class Guest  {
 protected:
     std::string VisitorsName;
-
 public:
-    Guest(std::string Order, int Price, std::string VisitorsName) : Pizzeria (Order, Price, pizza) {
+    Guest(std::string VisitorsName)  {
         this -> VisitorsName = VisitorsName;
     };
 
@@ -71,16 +88,14 @@ public:
     void setVisitorsName(std::string VisitorsName) { this -> VisitorsName = VisitorsName; };   //инкапсуляция с помощью сеттера
 
 
-    virtual const char* getStuffName(int x) override { return "Bill"; }                        //замена поведения
-
 };
 
-class Superiors : public Pizzeria {                                                            //инкапсуляция с помощью абстракции
+class Superiors : public Pizzeria {
 private:
     std::string OwnerName;
     std::string ChiefName;
 public:
-    Superiors (std::string Adress, std::string OwnerName, std::string ChiefName) : Pizzeria(Adress) {
+    Superiors (Pizzeria Adress, std::string OwnerName, std::string ChiefName) : Pizzeria (Adress) {
         this -> OwnerName = OwnerName;
         this -> ChiefName = ChiefName;
     }
@@ -89,30 +104,40 @@ public:
     };
     void InitAge (std::string chief_name, int chief_age) {
         Superiors :: ChiefName = chief_name;
-
     };
+
+    virtual std::string getStuffName() override {
+       StuffName = "John" ;
+    };                                                               //замена поведения
+
+    void OpenNewPizzeria (Pizzeria &p) {                             //инкапсуляция с помощью абстракции
+        p.Adress = "Green ave, 256";
+        NewPizza pizza;
+        p.getAdress();
+        StuffName = "Margarita";
+    }
 };
 
 int main() {
     Pizzeria PizzaHut("Green ave, 113");
     int ord;
     std::cout << "Hello, Pizza!" << std::endl;
-    //std::cout << "Choose pizza " << std::endl;
-    //std::cin >> ord;
+    std::cout << "Choose pizza " << std::endl;
+    std::cin >> ord;
 
     PizzaHut.setPrice(Pepperoni,100);  //позднее связывание
 
-   /* switch(ord) {
+    switch(ord) {
         case 0: PizzaHut.MakeOrder(Pepperoni);
             break;
         case 1: PizzaHut.MakeOrder(Hawaiian);
             break;
         case 2: PizzaHut.MakeOrder(FourCheese);
             break;
-        case 3: PizzaHut.callStuff("Nick");
+        case 3: PizzaHut.callStuff((const std::basic_string<char> &) "Nick");
             break;
     }
-    std::cout << "Your order is " << ord << std::endl; */
+    std::cout << "Your order is " << ord << std::endl;
 
     return 0;
 }

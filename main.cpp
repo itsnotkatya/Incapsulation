@@ -23,7 +23,7 @@ protected:
     int Price;
     Pizza pizza;
 public:
-    const std::string Adress;                         //отсутсвие инкапсуляции
+    std::string Adress;                         //отсутсвие инкапсуляции
     std::string StuffName;
 
     Pizzeria(const char *Adress) {
@@ -42,9 +42,10 @@ public:
     std::string getOrder() {
         return Order;
     };
-    std::string getAdress() const {
+
+    virtual void sayAdress(std::string Adress)  {
         std::cout << "Our Adress is ";
-        return Adress
+
     };
 
     virtual void setPrice(Pizza pizza, int price) {                                           //инкапсуляция через позднее связывание
@@ -71,9 +72,6 @@ public:
         return (const std::basic_string<char> &) "Nick";
     }
 
-    std:: string sayAdress(Pizzeria Adress) {
-        std::cout << getAdress() << std::endl;
-    }
 };
 
 class Guest  {
@@ -95,7 +93,7 @@ private:
     std::string OwnerName;
     std::string ChiefName;
 public:
-    Superiors (Pizzeria Adress, std::string OwnerName, std::string ChiefName) : Pizzeria (Adress) {
+    Superiors (Pizzeria Adress, const char *OwnerName, const char *ChiefName) : Pizzeria (Adress) {
         this -> OwnerName = OwnerName;
         this -> ChiefName = ChiefName;
     }
@@ -113,7 +111,7 @@ public:
     void OpenNewPizzeria (Pizzeria &p) {                             //инкапсуляция с помощью абстракции
         p.Adress = "Green ave, 256";
         NewPizza pizza;
-        p.getAdress();
+        p.sayAdress(p.Adress);
         StuffName = "Margarita";
     }
 };
@@ -139,5 +137,9 @@ int main() {
     }
     std::cout << "Your order is " << ord << std::endl;
 
+    Superiors NewPizzeria ("Green ave, 113","John","Peter");
+    NewPizzeria.OpenNewPizzeria(PizzaHut);              //инкапсуляция с помощью абстракции - создан объект дочернего класса,
+                                                           //вызвана функция этого класса, которая ожидает на вход ссылку на род. класс
+                                                           //и внутри вызывает виртуальный метод род. класса
     return 0;
 }

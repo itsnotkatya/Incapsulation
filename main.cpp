@@ -93,7 +93,7 @@ private:
     std::string OwnerName;
     std::string ChiefName;
 public:
-    Superiors (Pizzeria Adress, const char *OwnerName, const char *ChiefName) : Pizzeria (Adress) {
+    Superiors (const char *OwnerName, const char *ChiefName) : Pizzeria (Adress) {
         this -> OwnerName = OwnerName;
         this -> ChiefName = ChiefName;
     }
@@ -137,7 +137,7 @@ int main() {
     }
     std::cout << "Your order is " << ord << std::endl;
 
-    Superiors NewPizzeria ("Green ave, 113","John","Peter");
+    Superiors NewPizzeria ("John","Peter");
     NewPizzeria.OpenNewPizzeria(PizzaHut);              //инкапсуляция с помощью абстракции - создан объект дочернего класса,
                                                            //вызвана функция этого класса, которая ожидает на вход ссылку на род. класс
                                                            //и внутри вызывает виртуальный метод род. класса
